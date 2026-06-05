@@ -1,0 +1,30 @@
+---
+description: Core standards for all code in this monorepo
+alwaysApply: true
+---
+
+# Core standards
+
+- **DRY**: Repeat logic → shared function, hook, util, or package; repeat UI → component.
+- **Single responsibility**: One main idea per file; split when a file grows past **~300 lines** (soft limit).
+- **One component per file** (named export + file name matching the component).
+- **Separation of concerns**: UI vs data-fetch vs business rules vs IO (DB, HTTP) in different layers.
+- **Types**: TypeScript strict; avoid `any`; explicit types at API boundaries (DTOs, env, forms).
+- **Early returns** over deep nesting; handle errors at boundaries; no empty `catch`.
+- **Naming**: Verbs for functions (`get`, `create`, `validate`); nouns for types.
+- **Dependencies**: Stable public APIs between packages; no deep imports into another package’s internals.
+- **Tests**: Add or update tests for crucial business logic and edge cases whenever behavior changes.
+- **PR-first workflow**: Changes targeting `dev` should go through a feature branch and pull request by default. Only commit or push directly to `dev` when the user explicitly opts out of the PR flow.
+## Rule mirroring
+
+This repo has two parallel rule sets that must stay in sync:
+
+| Cursor | Copilot Chat |
+|--------|--------------|
+| `.cursor/rules/*.mdc` | `.github/instructions/*.instructions.md` |
+| `.cursor/commands/*.md` | `.github/prompts/*.prompt.md` |
+| `.cursor/rules/core-standards.mdc` + other `alwaysApply: true` rules | `.github/copilot-instructions.md` |
+
+- **Whenever you add or change a rule in one system, apply the same change to the mirror file in the other system** before committing.
+- File-scoped rules: keep `globs` (Cursor) and `applyTo` (Copilot) targeting the same path patterns.
+- Always-on rules (`alwaysApply: true` / `copilot-instructions.md`): keep content in sync across both.

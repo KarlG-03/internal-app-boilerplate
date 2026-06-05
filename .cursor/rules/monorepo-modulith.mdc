@@ -1,0 +1,11 @@
+---
+description: Monorepo layout and modulith backend boundaries
+alwaysApply: true
+---
+
+# Monorepo + modulith
+
+- **Layout**: Shared code in `packages/*`; apps in `apps/*` (`apps/api`, `apps/web`). No copy-paste between apps—extract to a package.
+- **Modulith**: One NestJS deployable with **domain modules** (borrowers, loans, etc.). Each module owns its slice; **avoid circular imports** between modules.
+- **API**: Clients depend on HTTP contract and env config—not on Nest internals.
+- **React**: Barrel folders `ComponentName/ComponentName.tsx` + `index.tsx` re-exporting default.

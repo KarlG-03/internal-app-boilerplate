@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "installCommand": "corepack enable && corepack prepare pnpm@10.33.0 --activate && pnpm install --frozen-lockfile",
+  "buildCommand": "bash scripts/vercel-api-build.sh",
+  "outputDirectory": "public",
+  "rewrites": [{ "source": "/(.*)", "destination": "/api" }],
+  "functions": {
+    "api/index.js": {
+      "maxDuration": 60,
+      "includeFiles": "apps/api/dist/**"
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/internal/cron/interest-accrual",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/internal/cron/due-date-reminders",
+      "schedule": "0 8 * * *"
+    }
+  ]
+}

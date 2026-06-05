@@ -1,0 +1,15 @@
+---
+description: Vite + React conventions for apps/web
+globs: apps/web/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# React (Vite)
+
+- **One component per file**; colocate only tiny private helpers with the component.
+- **Reuse**: Shared UI under `apps/web/src/components`; hooks under `apps/web/src/hooks`; API under `apps/web/src/lib`.
+- **shadcn/ui**: Primitives live in `src/components/ui/*` (registry output). Prefer composing those over one-off styled elements; keep feature UI in barrel folders under `components/` or `pages/`.
+- **Tailwind**: Utility-first styling; mobile-first breakpoints (`sm:`, `md:`, `lg:`).
+- **A11y**: Semantic HTML, labels, keyboard focus for interactive elements.
+- **No `alert()`**: Never use `alert()`, `confirm()`, or `prompt()`. Use the shadcn/ui `Dialog` component (or `AlertDialog` for confirmations) instead.
+- **Forms**: Use **react-hook-form** (`useForm`, `Controller`, `FormProvider`) for all forms — no uncontrolled `useState` fields or bare `<form>` wiring. Pair with **zod** + `@hookform/resolvers/zod` for schema validation. Surface field errors via the shadcn/ui `FormField` / `FormMessage` primitives. Only use plain controlled inputs for trivially single-field, stateless UI (e.g. an isolated search box with no submission).

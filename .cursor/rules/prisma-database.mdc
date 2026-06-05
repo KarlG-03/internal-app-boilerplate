@@ -1,0 +1,15 @@
+---
+description: Prisma as ORM — schema layout, DATABASE_URL, migrations, client lifecycle
+alwaysApply: true
+---
+
+# Database — Prisma
+
+- **ORM**: Use **Prisma** for schema, migrations, and queries. Do not mix a second ORM or raw driver stack for the same database without an explicit migration plan.
+- **Layout**: Keep **`schema.prisma`** and **`prisma/migrations/`** next to the deployable that owns the database (often repo-root **`prisma/`** or **`apps/<service>/prisma/`** in a monorepo). Shared models belong in a package only when multiple services truly share one schema lifecycle.
+- **Datasource**: **`provider`** in `schema.prisma` must match the database you target (typically **`postgresql`** for production and local Docker Postgres). **`DATABASE_URL`** is the canonical connection string—load it from env or a secrets manager; never commit it.
+- **Migrations**: Use **`prisma migrate dev`** in development and **`prisma migrate deploy`** in CI/production (or equivalent release step). Prefer migration history over ad‑hoc `db push` for shared/prod databases.
+- **Migration reset danger**: `prisma migrate dev` can trigger a **full database reset** (data loss) when it detects schema drift or migration history conflicts (e.g. after renaming/reordering migration files). Never rename or reorder existing migration folders. Before running `prisma migrate dev`, warn the user if drift is detected — offer to fix the drift without a reset. Never run `prisma migrate reset` on a shared or production database.
+- **Client lifecycle**: Use **one** `PrismaClient` per process. Connect when the app boots, **disconnect on shutdown** (SIGTERM/SIGINT where applicable). Inject or import that shared instance into data-access code—avoid constructing `PrismaClient` ad hoc (e.g. per request).
+- **API boundaries**: Prefer **generated Prisma types** (or thin mappers from them); keep HTTP DTOs separate where wire shapes differ.
+- **Copying**: Drop into **`.cursor/rules/`** in another project and adjust **`alwaysApply`** / **`globs`** (e.g. `**/prisma/**`) as needed.

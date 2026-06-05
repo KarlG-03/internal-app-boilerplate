@@ -1,0 +1,16 @@
+---
+description: Always confirm before paid tiers, addons, or spend via cloud/MCP
+alwaysApply: true
+---
+
+# Spend & billing safety
+
+Before **any** action that might **charge money** or **upgrade** infrastructure, **stop and ask the user for explicit confirmation** with a clear price impact (even if approximate or “metered”). Do not infer consent from earlier messages.
+
+Apply to (non-exhaustive):
+
+- **Render**: non-free **`plan`** values (`starter`, `basic-*`, `pro-*`, flexible compute, autoscaled tiers), **extras** (HA, replicas, disks, egress-heavy choices), converting from **free/expiring** tiers to paid, or MCP/tool calls that **create or resize** billable resources.
+- **Other hosts & APIs**: analogous **paid SKUs**, **reserved capacity**, usage-based billing, or prepaid credits.
+- **MCP / agents**: tooling that provisions cloud resources, modifies **production env** in ways tied to scaling, or runs **migrate / deploy** that could trigger **recoverable-but-costly** restores—confirm when **plan or monthly cost** could change.
+
+If the user’s goal is achievable on a **free or existing** footprint, prefer that path unless they **explicitly** choose otherwise.

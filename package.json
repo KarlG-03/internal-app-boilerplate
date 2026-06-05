@@ -1,0 +1,38 @@
+{
+  "name": "internal-app-boilerplate",
+  "version": "0.1.0",
+  "private": true,
+  "description": "pnpm monorepo starter — NestJS API + Vite web + admin",
+  "scripts": {
+    "dev": "pnpm --parallel --filter ./apps/api --filter ./apps/web --filter ./apps/admin run dev",
+    "dev:api": "pnpm --filter api start:dev",
+    "dev:web": "pnpm --filter web dev",
+    "dev:admin": "pnpm --filter admin dev",
+    "build": "pnpm run -r build",
+    "lint": "pnpm run -r --if-present lint",
+    "test": "pnpm run -r --if-present test",
+    "db:up": "docker compose up -d db",
+    "db:down": "docker compose down",
+    "db:studio": "pnpm --filter api exec prisma studio",
+    "db:migrate": "pnpm --filter api exec prisma migrate dev",
+    "db:migrate:deploy": "pnpm --filter api exec prisma migrate deploy --schema prisma/schema.prisma",
+    "db:migrate:status": "pnpm --filter api exec prisma migrate status --schema prisma/schema.prisma"
+  },
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@vendia/serverless-express": "^4.12.6",
+    "reflect-metadata": "^0.2.2"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@nestjs/core",
+      "bcrypt",
+      "@prisma/client",
+      "@prisma/engines",
+      "prisma"
+    ]
+  }
+}

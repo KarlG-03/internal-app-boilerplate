@@ -1,0 +1,12 @@
+---
+description: Use pnpm for installs, scripts, and workspace filtering
+alwaysApply: true
+---
+
+# Package manager — pnpm
+
+- **Installs**: `pnpm install`; do not use `npm` or `yarn` for this repo.
+- **Root scripts**: Run from workspace root (`pnpm dev`, `pnpm build`, etc.).
+- **Workspace packages**: Target apps/packages with `--filter <name-or-path>` (e.g. `pnpm --filter api …`, `pnpm --filter ./apps/web …`).
+- **Parallel apps**: Prefer `pnpm --parallel --filter … --filter … run <script>` over per‑package guesses when orchestrating multiple workspace dev servers.
+- **Lockfile**: Treat `pnpm-lock.yaml` as the source of dependency truth; regenerate via pnpm rather than editing by hand.

@@ -1,0 +1,11 @@
+---
+applyTo: "apps/api/**/*.ts"
+---
+
+# NestJS (apps/api)
+
+- **Structure**: Feature modules per domain; thin controllers; services for orchestration; **Prisma models** colocated with their module's DTOs/services.
+- **Validation**: DTOs + `class-validator` at HTTP boundaries.
+- **Config**: `@nestjs/config`; no scattered `process.env`—use `ConfigService` or a typed config helper.
+- **Errors**: Consistent HTTP mapping; no raw stack traces to clients in production.
+- **Database**: Prisma (`schema.prisma`, `prisma migrate`); singleton `PrismaService` wired in modules—not TypeORM for new code.

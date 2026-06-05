@@ -1,0 +1,1 @@
+export { LegacyAuthRedirect } from './LegacyAuthRedirect';

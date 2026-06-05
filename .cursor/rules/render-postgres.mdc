@@ -1,0 +1,46 @@
+---
+description: Managed PostgreSQL on Render — connection URLs, env, SSL, migrations
+alwaysApply: true
+---
+
+# Render Postgres (generic)
+
+Use **[Render Postgres](https://render.com/docs/postgresql)** when you want a hosted database: backups, versioning, HA options, and straightforward wiring to Render web services.
+
+## Connection string
+
+- **Source of truth**: Render dashboard → your Postgres instance → **Connections** / **Environment** (`DATABASE_URL`).
+- **`DATABASE_URL`** is the standard name apps and ORMs expect; keep it **only** in environment variables or a secret manager—never commit it or paste it into source.
+- **Internal URL**: Use for workloads **running on Render in the same account/region** (lower latency, no egress to public internet). Render injects/linking env when you connect a web service to the DB.
+- **External URL**: Use for **local dev, CI, or off-Render runners** when you deliberately allow **inbound external access** on the datastore (narrow IP allowlists if available; accept connection security trade-offs).
+
+## SSL
+
+- Prefer URLs that enforce TLS for external clients (often `sslmode=require` or equivalent query param). If the driver or ORM has a separate `ssl`/`TLS`/`rejectUnauthorized` option, align it with deployment docs—not “SSL off everywhere.”
+
+## Migrations vs “auto sync schema”
+
+- **Production**: apply schema changes via **explicit migrations** (your stack’s migrate command in build/release—not ad‑hoc `db push` / `sync: true`-style DDL unless that is an intentional temporary setup).
+- **Development**: migration commands that assume a writable dev DB (`migrate dev`) stay on **non-production** instances.
+
+## Environments
+
+- **Separate databases** (or at least isolated roles/databases) per environment (production / staging / dev). Do not share one prod URL across local laptops.
+- **Local dev**: default to a **local** Postgres (Docker) or the project’s documented local store; only point at Render when you need to debug against a remote dev instance.
+
+## Frontend (Vite SPA on Render Static)
+
+- **Build-time env**: `VITE_*` is inlined at **`pnpm vite build`**; Render must expose **`VITE_API_URL`** / **`VITE_API_KEY`** to the **static site** service (see repo **`render.yaml`**).
+- **`CORS_ORIGIN`** on the **API** must include the **static site’s browser origin** (scheme + host, no path).
+- **Client-side routing**: configure a **`/*` → `/index.html` rewrite** (Blueprint `routes`) so refreshes/deep links work.
+
+## Render MCP (optional)
+
+- Keep API keys in **shell env** or a **project env file** referenced by MCP config (e.g. `envFile` for stdio bridges); never commit keys.
+- **Scoped workspace**: Point MCP at the right Render workspace (e.g. *“Set my Render workspace to …”*) before listing or provisioning resources—the API key spans what your account can access.
+- **Capabilities gap**: MCP can **create** some services and wire env; it does **not** replace every dashboard step ([Render MCP limitations](https://render.com/docs/mcp-server#limitations)). Deletes, arbitrary plan changes, deploy triggers often still belong in the **Dashboard**.
+- Before using MCP for **paid or higher-tier** resources, follow the **`spend-confirmation`** workspace rule—get explicit OK from the user.
+
+## Copying to another project
+
+- Drop this file into **`.cursor/rules/`** and adjust `alwaysApply` / add `globs` (e.g. `**/prisma/**`, `**/*.tf`) if you want it only when touching infra or schema.

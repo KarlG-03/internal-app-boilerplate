@@ -1,0 +1,9 @@
+---
+description: Imports and public package boundaries
+alwaysApply: true
+---
+
+# Imports
+
+- Prefer **path aliases** (`@/` for web) over long `../../../` chains.
+- **Barrels**: Package exports through clear entry points; avoid circular barrel graphs.

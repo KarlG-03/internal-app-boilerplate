@@ -1,0 +1,34 @@
+---
+description: >-
+  Git: PR-first to dev (and up the env ladder). "Commit to dev" means feature branch +
+  PR into dev, not push straight to dev. No git commit unless the user explicitly
+  requests it. No direct push/merge to main unless the user asks. See
+  promote-through-environments command for the full ladder.
+alwaysApply: true
+---
+
+# Pull request workflow
+
+## Default branch
+
+- **Integration branch:** `dev`. PRs should target **`dev`** unless the user names another base (e.g. `staging`, `main`).
+
+## When the user prompts for PR / merge
+
+- **Create a pull request** into **`dev`** (from the current feature branch), e.g. GitHub CLI: `gh pr create --base dev`.
+- **Merge into `dev`** when they ask to merge (e.g. `gh pr merge` after checks pass), or give exact steps if `gh` is unavailable.
+
+## Do not
+
+- **Auto-commit:** never run `git commit` unless the user **explicitly** asks to commit, save work in git, or similar.
+- **Push or merge to `main`** unless the user **explicitly** asks (release, hotfix, deploy from `main`, etc.).
+- **Push new work straight to `dev` (or `staging` / `preprod`)** without a PR when the user asked to “commit to dev” or “put work on dev” in the normal sense. Those phrases mean: **feature branch → `gh pr create --base dev` → merge on GitHub** (see command **promote-through-environments**). Only bypass if the user **explicitly** opts out (e.g. “push directly to dev”, “skip PR”, “no PR for this”).
+
+## Routine changes
+
+- Prefer a **feature branch** off **`dev`** (or `main` if that is your only trunk), push the branch, open PR → **`dev`**, then merge after review/checks.
+- After the user asks to **commit** or **save work targeting dev**, prefer: commit on the **current feature branch** → `git push -u origin <branch>` → **`gh pr create --base dev --head <branch>`** (or give the user the PR URL steps). Do not replace that with **`git checkout dev && git commit && git push`** unless they opted out of PRs.
+
+## This repo
+
+- Treat the **authoritative copy** of this rule as living on branch **`dev`**: update and merge it on **`dev`** so contributors on `dev` see the same behavior; avoid divergent PR workflows on `main` alone.
